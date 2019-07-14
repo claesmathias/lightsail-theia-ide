@@ -46,11 +46,11 @@ sudo chcon -Rt svirt_sandbox_file_t /home/centos
 restorecon -FRvv ~/.ssh
 
 # start docker containers
-cd /home/centos/lightsail-thei-ide/
+cd /home/centos/lightsail-theia-ide/
 /usr/local/bin/docker-compose up -d
 
 # create basic auth user
 htpasswd -b -c /home/centos/letsencrypt/nginx/.htpasswd admin password
 
 # set permissions
-sudo chmod 777 /home/centos/lightsail-theia-ide/
+sudo chmod -R 777 /home/centos/lightsail-theia-ide/
