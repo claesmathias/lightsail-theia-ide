@@ -29,9 +29,9 @@ services:
       - 443:443
     volumes:
       - /home/centos/letsencrypt:/config
-      - /home/centos/lightsail-htpc/nginx:/config/nginx/site-confs/default
+      - /home/centos/lightsail-theia-ide/nginx:/config/nginx/site-confs/default
     depends_on:
-      - "noip"
+      - "no-ip"
       - "theia"
     networks:
       - app_net

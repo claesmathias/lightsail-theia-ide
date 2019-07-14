@@ -1,0 +1,55 @@
+#!/bin/bash
+# install the necessary tools
+sudo yum update -y
+sudo yum install docker httpd-tools git wget unzip -y
+
+# add new group and add centos user
+sudo groupadd docker
+sudo usermod -aG docker centos
+
+# enable docker at startup
+sudo systemctl enable docker.service
+sudo systemctl start docker.service
+
+# install docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+# download resources from git
+cd /home/centos/
+git clone https://github.com/claesmathias/lightsail-theia-ide.git
+
+# set docker-compose environment variables
+cat <<EOF >/home/centos/lightsail-theia-ide/.env
+HOST_IP=$(hostname --ip-address)
+EMAIL=claesmathias@gmail.com
+URL=aws.claesmathias.com
+TZ=Europe/Brussels
+EOF
+
+# set noip variables
+cat <<EOF >/home/centos/lightsail-theia-ide/noip.conf
+# This is an email address
+USERNAME='claesmathias@gmail.com'
+PASSWORD='**********************'
+# Your hostname, group name, or a comma-delimited list of a mix of them.
+DOMAINS='aws.claesmathias.com'
+# Examples: 5 m, 5 h, 5 d. Minimum is 5 minutes.
+INTERVAL='5m'
+EOF
+
+# set selinux permissions
+sudo chcon -Rt svirt_sandbox_file_t /home/centos
+# reset ssh permissions
+restorecon -FRvv ~/.ssh
+
+# start docker containers
+cd /home/centos/lightsail-thei-ide/
+/usr/local/bin/docker-compose up -d
+
+# create basic auth user
+htpasswd -b -c /home/centos/letsencrypt/nginx/.htpasswd admin password
+
+# set permissions
+sudo chmod 777 /home/centos/lightsail-theia-ide/
