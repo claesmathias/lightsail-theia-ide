@@ -67,7 +67,7 @@ services:
     container_name: theia
     restart: always
     volumes:
-      - $(pwd):/home/project
+      - ${PROJECT_DIR}:/home/project
     networks:
       - app_net
 

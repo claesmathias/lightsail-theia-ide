@@ -26,6 +26,7 @@ HOST_IP=$(hostname --ip-address)
 EMAIL=claesmathias@gmail.com
 URL=aws.claesmathias.com
 TZ=Europe/Brussels
+PROJECT_DIR=/home/centos/lightsail-theia-ide
 EOF
 
 # set noip variables
